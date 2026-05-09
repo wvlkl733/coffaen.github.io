@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Construction Portfolio Manager</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#1a56b0;--c1l:#dbeafe;--c1m:#3b82f6;
+  --c2:#0e7e5e;--c2l:#d1fae5;
+  --c3:#b45309;--c3l:#fef3c7;
+  --c4:#7c3aed;--c4l:#ede9fe;
+  --c5:#be185d;--c5l:#fce7f3;
+  --c6:#0e7490;--c6l:#cffafe;
+  --red:#dc2626;--redl:#fee2e2;
+  --amber:#d97706;--amberl:#fef3c7;
+  --green:#059669;--greenl:#d1fae5;
+  --gray:#6b7280;--grayl:#f3f4f6;
+  --border:#e5e7eb;
+  --bg:#f0f4f8;
+  --bg2:#ffffff;
+  --text:#111827;
+  --text2:#6b7280;
+  --text3:#9ca3af;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow:0 4px 12px rgba(0,0,0,.1);
+  --shadow-lg:0 10px 30px rgba(0,0,0,.12);
+  --r:12px;--r-sm:8px;
+}
+html,body{height:100%;font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+
+/* ═══ SHELL ═══ */
+.shell{display:grid;grid-template-rows:56px 1fr;height:100vh;overflow:hidden}
+
+/* ═══ TOPBAR ═══ */
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:0 1.5rem;
+  background:var(--c1);
+  box-shadow:0 2px 8px rgba(26,86,176,.35)
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{
+  width:34px;height:34px;border-radius:9px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center
+}
+.brand-logo i{font-size:19px;color:#fff}
+.brand-name{font-family:'Prompt',sans-serif;font-size:15px;font-weight:600;color:#fff}
+.brand-sub{font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.04em}
+.top-sep{width:1px;height:24px;background:rgba(255,255,255,.2);margin:0 4px}
+.nav-pills{display:flex;gap:2px}
+.np{
+  padding:6px 14px;border-radius:7px;font-size:12px;font-weight:500;
+  border:none;cursor:pointer;font-family:'Sarabun',sans-serif;
+  color:rgba(255,255,255,.75);background:transparent;
+  display:flex;align-items:center;gap:5px;transition:.15s
+}
+.np i{font-size:15px}
+.np:hover{background:rgba(255,255,255,.12);color:#fff}
+.np.on{background:rgba(255,255,255,.2);color:#fff;font-weight:600}
+.top-right{margin-left:auto;display:flex;gap:6px;align-items:center}
+.chip{
+  font-size:11px;color:rgba(255,255,255,.8);
+  background:rgba(255,255,255,.12);border-radius:20px;
+  padding:4px 12px;display:flex;align-items:center;gap:5px
+}
+.chip i{font-size:13px}
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;
+  font-family:'Sarabun',sans-serif;cursor:pointer;transition:.15s;
+  border:1px solid var(--border);background:var(--bg2);color:var(--text)
+}
+.btn:hover{background:#f9fafb}
+.btn.accent{background:#fff;color:var(--c1);border-color:#fff;box-shadow:var(--shadow-sm)}
+.btn.accent:hover{background:#f0f7ff}
+.btn.danger{background:transparent;color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.3)}
+.btn.danger:hover{background:rgba(255,0,0,.15);color:#fff}
+.btn i{font-size:15px}
+
+/* ═══ BODY PANELS ═══ */
+.body{display:grid;grid-template-columns:280px 1fr;height:100%;overflow:hidden}
+
+/* ─── LEFT: PROJECT LIST ─── */
+.proj-panel{
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden
+}
+.proj-panel-head{
+  padding:.85rem 1rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between
+}
+.proj-panel-head h2{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:5px}
+.proj-panel-head h2 i{font-size:14px;color:var(--c1)}
+.proj-list{flex:1;overflow-y:auto;padding:.65rem}
+.proj-card{
+  border-radius:var(--r-sm);border:1.5px solid var(--border);
+  padding:.75rem;margin-bottom:.5rem;cursor:pointer;
+  transition:.2s;position:relative;overflow:hidden;
+  background:var(--bg2)
+}
+.proj-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--pc,var(--c1));border-radius:4px 0 0 4px
+}
+.proj-card:hover{border-color:var(--pc,var(--c1));box-shadow:var(--shadow-sm)}
+.proj-card.active{
+  border-color:var(--pc,var(--c1));
+  background:linear-gradient(135deg,var(--pcl,#dbeafe) 0%,#fff 100%);
+  box-shadow:var(--shadow-sm)
+}
+.pc-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pc-icon{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--pc,var(--c1));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.pc-icon i{font-size:15px;color:#fff}
+.pc-name{font-size:13px;font-weight:600;flex:1;line-height:1.3}
+.pc-badge{
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;
+  background:var(--pc,var(--c1));color:#fff;letter-spacing:.04em
+}
+.pc-meta{font-size:10px;color:var(--text2);display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.pc-meta i{font-size:11px;vertical-align:-1px}
+.pc-bar-wrap{display:flex;align-items:center;gap:6px}
+.pc-bar{flex:1;height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.pc-bar-fill{height:100%;border-radius:3px;background:var(--pc,var(--c1));transition:.3s}
+.pc-pct{font-size:10px;font-weight:700;color:var(--pc,var(--c1));width:28px;text-align:right}
+.pc-val-chip{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:10px;padding:2px 7px;border-radius:20px;
+  background:var(--pcl,#dbeafe);color:var(--pc,var(--c1));font-weight:600
+}
+.proj-add-btn{
+  margin:.5rem .65rem .65rem;
+  padding:.6rem;border-radius:var(--r-sm);
+  border:1.5px dashed var(--border);background:transparent;
+  font-size:12px;color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-family:'Sarabun',sans-serif;transition:.15s
+}
+.proj-add-btn:hover{border-color:var(--c1);color:var(--c1);background:var(--c1l)}
+
+/* ─── RIGHT: CONTENT ─── */
+.content{overflow-y:auto;background:var(--bg)}
+
+/* ─── PORTFOLIO VIEW ─── */
+.port-hero{
+  background:linear-gradient(135deg,var(--c1) 0%,#2563eb 60%,#1e40af 100%);
+  padding:2rem 2rem 1.5rem;position:relative;overflow:hidden
+}
+.port-hero::before{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:rgba(255,255,255,.06)
+}
+.port-hero::after{
+  content:'';position:absolute;right:60px;bottom:-80px;
+  width:160px;height:160px;border-radius:50%;
+  background:rgba(255,255,255,.04)
+}
+.port-title{font-family:'Prompt',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+.port-sub{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:1.5rem}
+.port-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.pk{
+  background:rgba(255,255,255,.12);backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;padding:.85rem 1rem
+}
+.pk-val{font-size:22px;font-weight:700;color:#fff;margin-bottom:2px}
+.pk-lbl{font-size:10px;color:rgba(255,255,255,.65);letter-spacing:.04em;text-transform:uppercase}
+.pk-icon{font-size:18px;color:rgba(255,255,255,.4);float:right;margin-top:-22px}
+
+.port-body{padding:1.5rem}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.section-title{font-family:'Prompt',sans-serif;font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px}
+.section-title i{font-size:18px;color:var(--c1)}
+
+/* Project cards in portfolio */
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:1.5rem}
+.pg-card{
+  background:var(--bg2);border-radius:var(--r);
+  border:1px solid var(--border);overflow:hidden;
+  cursor:pointer;transition:.2s;box-shadow:var(--shadow-sm)
+}
+.pg-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.pg-header{
+  height:80px;
+  background:linear-gradient(135deg,var(--pc,var(--c1)) 0%,var(--pcm,var(--c1m)) 100%);
+  padding:1rem;display:flex;align-items:flex-start;justify-content:space-between;
+  position:relative;overflow:hidden
+}
+.pg-header::after{
+  content:'';position:absolute;right:-20px;bottom:-20px;
+  width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1)
+}
+.pg-proj-name{font-family:'Prompt',sans-serif;font-size:14px;font-weight:700;color:#fff;line-height:1.3}
+.pg-proj-code{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px}
+.pg-status-dot{
+  width:10px;height:10px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.5);flex-shrink:0;margin-top:4px
+}
+.pg-body{padding:1rem}
+.pg-value{display:flex;align-items:baseline;gap:4px;margin-bottom:.65rem}
+.pg-value-num{font-size:20px;font-weight:700;color:var(--text)}
+.pg-value-unit{font-size:11px;color:var(--text2)}
+.pg-meta-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:.65rem}
+.pg-progress-section{margin-bottom:.65rem}
+.pg-progress-label{display:flex;justify-content:space-between;font-size:10px;font-weight:600;margin-bottom:4px}
+.pg-progress-label span:first-child{color:var(--text2)}
+.pg-progress-label span:last-child{color:var(--pc,var(--c1))}
+.pg-bar{height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden}
+.pg-bar-fill{height:100%;border-radius:4px;background:var(--pc,var(--c1));transition:.4s}
+.pg-milestones{display:flex;gap:4px;flex-wrap:wrap}
+.pg-ms-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--pc,var(--c1));opacity:.3;
+  transition:.15s
+}
+.pg-ms-dot.done{opacity:1}
+.pg-ms-dot.wip{opacity:.7;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:.7}50%{opacity:1;transform:scale(1.3)}}
+.pg-footer{
+  padding:.65rem 1rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg)
+}
+.pg-ms-summary{font-size:10px;color:var(--text2);display:flex;gap:10px}
+.pg-ms-summary span{display:flex;align-items:center;gap:3px}
+.pg-ms-summary i{font-size:11px}
+
+/* Value summary bar */
+.value-bar-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem;
+  box-shadow:var(--shadow-sm)
+}
+.vb-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;display:flex;align-items:center;gap:5px}
+.vb-title i{font-size:14px;color:var(--c1)}
+.vb-track{height:28px;background:#e5e7eb;border-radius:8px;overflow:hidden;display:flex;margin-bottom:.75rem}
+.vb-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;transition:.4s;min-width:4px;overflow:hidden;cursor:pointer;position:relative}
+.vb-seg:hover{filter:brightness(1.1)}
+.vb-legend{display:flex;gap:12px;flex-wrap:wrap}
+.vb-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text)}
+.vb-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.vb-item-val{font-weight:600}
+
+/* ─── PROJECT DETAIL VIEW ─── */
+.det-hero{
+  padding:1.5rem 1.5rem 0;
+  background:var(--bg2);border-bottom:1px solid var(--border)
+}
+.det-top{display:flex;align-items:center;gap:12px;margin-bottom:1rem}
+.det-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--pc,var(--c1));
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 3px 8px rgba(0,0,0,.2)
+}
+.det-icon i{font-size:22px;color:#fff}
+.det-name{font-family:'Prompt',sans-serif;font-size:18px;font-weight:700;color:var(--text)}
+.det-code{font-size:11px;color:var(--text2);margin-top:2px}
+.det-actions{margin-left:auto;display:flex;gap:6px}
+.det-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding-bottom:1.25rem}
+.dkpi{
+  background:var(--bg);border-radius:var(--r-sm);padding:.7rem .85rem;
+  border:1px solid var(--border)
+}
+.dkpi-val{font-size:17px;font-weight:700;color:var(--text);margin-bottom:2px}
+.dkpi-lbl{font-size:10px;color:var(--text2)}
+.det-tabs{display:flex;gap:0;border-top:1px solid var(--border)}
+.dt{
+  padding:9px 18px;font-size:12px;font-weight:500;
+  border:none;background:transparent;cursor:pointer;
+  font-family:'Sarabun',sans-serif;color:var(--text2);
+  border-bottom:2px solid transparent;transition:.15s;
+  display:flex;align-items:center;gap:5px
+}
+.dt i{font-size:14px}
+.dt:hover{color:var(--text)}
+.dt.on{color:var(--c1);border-bottom-color:var(--c1);font-weight:600}
+
+.det-body{padding:1.25rem}
+
+/* Form fields */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.1rem;margin-bottom:1rem;
+  box-shadow:var(--shadow-sm)
+}
+.card-title{
+  font-size:12px;font-weight:600;color:var(--text2);
+  text-transform:uppercase;letter-spacing:.06em;
+  display:flex;align-items:center;gap:5px;
+  margin-bottom:.85rem;padding-bottom:.65rem;border-bottom:1px solid var(--border)
+}
+.card-title i{font-size:14px;color:var(--c1)}
+.field{margin-bottom:.65rem}
+.field label{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);font-weight:600;margin-bottom:4px;letter-spacing:.03em}
+.field label i{font-size:12px}
+.field input,.field select{
+  width:100%;padding:7px 10px;
+  border:1px solid var(--border);border-radius:7px;font-size:13px;
+  background:var(--bg);color:var(--text);font-family:'Sarabun',sans-serif;transition:.15s
+}
+.field input:focus,.field select:focus{
+  outline:none;border-color:var(--c1m);
+  background:var(--bg2);box-shadow:0 0 0 3px rgba(59,130,246,.15)
+}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* Milestone list */
+.ms-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.ms-count-lbl{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:5px}
+.ms-count-lbl i{font-size:13px;color:var(--c1)}
+.ms-item{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:.7rem .85rem;margin-bottom:.4rem;
+  cursor:pointer;transition:.15s;position:relative;overflow:hidden
+}
+.ms-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--msc,var(--c1))
+}
+.ms-item:hover{border-color:var(--msc,var(--c1));background:var(--bg2)}
+.ms-item.active{background:var(--bg2);border-color:var(--msc,var(--c1));box-shadow:var(--shadow-sm)}
+.ms-top{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ms-num{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;flex-shrink:0;
+  background:var(--msc,var(--c1));color:#fff
+}
+.ms-name{font-size:12px;font-weight:600;flex:1;line-height:1.3}
+.ms-meta{font-size:10px;color:var(--text2);display:flex;gap:8px;align-items:center}
+.ms-meta i{font-size:11px}
+.ms-bar{height:3px;background:#e5e7eb;border-radius:2px;margin-top:5px;overflow:hidden}
+.ms-bar-fill{height:100%;border-radius:2px;background:var(--msc,var(--c1));transition:.3s}
+
+/* Overview cards */
+.ms-ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ms-ov-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-left:3px solid var(--msc,var(--c1));
+  border-radius:var(--r-sm);padding:.75rem;cursor:pointer;transition:.15s
+}
+.ms-ov-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+.ms-ov-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px}
+.ms-ov-name{font-size:12px;font-weight:600;flex:1;padding-right:6px}
+.ms-ov-meta{font-size:10px;color:var(--text2);margin-bottom:6px;display:flex;gap:8px;flex-wrap:wrap}
+.ms-ov-meta i{font-size:11px}
+.ms-ov-footer{display:flex;align-items:center;gap:6px}
+.ms-ov-prog-bar{flex:1;height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.ms-ov-prog-fill{height:100%;border-radius:3px;background:var(--msc,var(--c1))}
+.ms-ov-pct{font-size:10px;font-weight:700;color:var(--msc,var(--c1));min-width:28px;text-align:right}
+
+/* Gantt */
+.gantt-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm)
+}
+.gtbl{width:100%;border-collapse:collapse;font-size:11px}
+.gtbl th{
+  padding:7px 10px;background:var(--bg);
+  border-bottom:1px solid var(--border);
+  font-weight:600;font-size:10px;color:var(--text2);
+  text-align:left;white-space:nowrap;letter-spacing:.03em
+}
+.gtbl td{padding:5px 10px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.gr-ms td{background:#f9fafb;font-weight:600}
+.gr-ms td:first-child{font-size:12px}
+.gr-task:hover td{background:#fafafa}
+.g-indent{padding-left:22px;color:var(--text2);font-size:10px}
+.g-bar-cell{min-width:280px}
+.g-track{position:relative;height:18px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.g-plan{position:absolute;height:100%;border-radius:3px;opacity:.2}
+.g-prog{position:absolute;height:100%;border-radius:3px;display:flex;align-items:center;padding:0 4px;font-size:9px;color:#fff;font-weight:700;min-width:2px}
+.g-today{position:absolute;top:0;bottom:0;width:1.5px;background:var(--red);z-index:2}
+
+/* Timeline */
+.tl-item{display:grid;grid-template-columns:95px 20px 1fr;gap:0 10px;align-items:start}
+.tl-date{font-size:10px;color:var(--text3);text-align:right;padding-top:5px;font-weight:500}
+.tl-spine{display:flex;flex-direction:column;align-items:center}
+.tl-dot{
+  width:13px;height:13px;border-radius:50%;
+  border:2px solid var(--border);background:var(--bg2);
+  margin-top:4px;z-index:1;flex-shrink:0;transition:.2s
+}
+.tl-dot.done{background:var(--green);border-color:var(--green)}
+.tl-dot.wip{border-width:3px;box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+.tl-dot.late{background:var(--red);border-color:var(--red)}
+.tl-line{width:2px;flex:1;background:var(--border);min-height:24px;margin-top:2px}
+.tl-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-left:3px solid var(--msc,var(--c1));
+  border-radius:var(--r-sm);padding:.7rem .9rem;
+  margin-bottom:10px;cursor:pointer;transition:.15s
+}
+.tl-card:hover{box-shadow:var(--shadow-sm)}
+.tl-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.tl-card-name{font-size:12px;font-weight:600}
+.tl-card-meta{font-size:10px;color:var(--text2);display:flex;gap:10px;flex-wrap:wrap;margin-bottom:5px}
+.tl-card-meta i{font-size:11px}
+.tl-prog{height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden}
+.tl-prog-fill{height:100%;border-radius:2px}
+
+/* Detail edit */
+.det-edit-wrap{display:flex;flex-direction:column;gap:.85rem}
+.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.85rem}
+.k4{background:var(--bg);border-radius:8px;padding:.65rem .75rem;border:1px solid var(--border)}
+.k4-val{font-size:18px;font-weight:700;margin-bottom:1px}
+.k4-lbl{font-size:10px;color:var(--text2)}
+.date-edit{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.85rem}
+.date-edit>div{flex:1;min-width:95px}
+.date-edit label{font-size:10px;color:var(--text2);font-weight:600;display:block;margin-bottom:3px;letter-spacing:.03em}
+.date-edit input,.date-edit select{
+  width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:7px;
+  font-size:12px;background:var(--bg);color:var(--text);
+  font-family:'Sarabun',sans-serif
+}
+.date-edit input:focus,.date-edit select:focus{outline:none;border-color:var(--c1m);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.task-cols{display:grid;grid-template-columns:1fr 88px 88px 55px 26px;gap:4px;margin-bottom:4px}
+.tcol{font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:0 3px}
+.task-row2{display:grid;grid-template-columns:1fr 88px 88px 55px 26px;gap:4px;align-items:center;padding:3px;border-radius:6px;transition:.1s}
+.task-row2:hover{background:var(--bg)}
+.task-row2 input{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-size:11px;background:var(--bg2);color:var(--text);font-family:'Sarabun',sans-serif}
+.task-row2 input:focus{outline:none;border-color:var(--c1m)}
+.task-row2 select{width:100%;padding:5px 7px;border:1px solid var(--border);border-radius:5px;font-size:11px;background:var(--bg2);color:var(--text);font-family:'Sarabun',sans-serif}
+.btn-del{width:24px;height:24px;border-radius:5px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text3);display:flex;align-items:center;justify-content:center;transition:.15s}
+.btn-del:hover{background:var(--redl);border-color:var(--red);color:var(--red)}
+.btn-del i{font-size:12px}
+.empty-tasks{text-align:center;padding:1.25rem;border:1.5px dashed var(--border);border-radius:8px;color:var(--text3);font-size:12px}
+.empty-tasks i{font-size:22px;display:block;margin-bottom:4px}
+.prog-bar-lg{height:10px;background:#e5e7eb;border-radius:5px;overflow:hidden;margin:.5rem 0 .25rem}
+.prog-bar-lg-fill{height:100%;border-radius:5px;transition:.4s}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.badge i{font-size:10px}
+.badge-done{background:#d1fae5;color:#065f46}
+.badge-wip{background:#dbeafe;color:#1e40af}
+.badge-late{background:#fee2e2;color:#991b1b}
+.badge-wait{background:var(--grayl);color:var(--gray)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:5px}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .2s ease}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo"><i class="ti ti-building-skyscraper" aria-hidden="true"></i></div>
+    <div>
+      <div class="brand-name">Construction Portfolio</div>
+      <div class="brand-sub">ระบบบริหารโครงการก่อสร้าง</div>
+    </div>
+  </div>
+  <div class="top-sep"></div>
+  <div class="nav-pills">
+    <button class="np on" onclick="showPage('portfolio')">
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i> ภาพรวมทั้งหมด
+    </button>
+    <button class="np" id="detBtn" onclick="showPage('detail')" style="display:none">
+      <i class="ti ti-list-details" aria-hidden="true"></i> <span id="detBtnName">โครงการ</span>
+    </button>
+  </div>
+  <div class="top-right">
+    <div class="chip" id="todayChip"><i class="ti ti-calendar" aria-hidden="true"></i> <span id="todayTxt"></span></div>
+    <button class="btn accent" onclick="addProject()"><i class="ti ti-plus" aria-hidden="true"></i> เพิ่มโครงการ</button>
+  </div>
+</div>
+
+<!-- ═══ BODY ═══ -->
+<div class="body">
+
+  <!-- ── PROJECT LIST PANEL ── -->
+  <div class="proj-panel">
+    <div class="proj-panel-head">
+      <h2><i class="ti ti-building" aria-hidden="true"></i> รายการโครงการ</h2>
+      <span id="projCountChip" style="background:var(--c1l);color:var(--c1);border-radius:20px;font-size:10px;font-weight:700;padding:2px 9px"></span>
+    </div>
+    <div class="proj-list" id="projList"></div>
+    <button class="proj-add-btn" onclick="addProject()">
+      <i class="ti ti-plus" aria-hidden="true"></i> เพิ่มโครงการใหม่
+    </button>
+  </div>
+
+  <!-- ── CONTENT ── -->
+  <div class="content" id="contentArea"></div>
+
+</div>
+</div>
+
+<script>
+/* ══════════════ DATA ══════════════ */
+const PROJ_COLORS=[
+  {c:'#1a56b0',cm:'#3b82f6',cl:'#dbeafe'},
+  {c:'#0e7e5e',cm:'#10b981',cl:'#d1fae5'},
+  {c:'#b45309',cm:'#f59e0b',cl:'#fef3c7'},
+  {c:'#7c3aed',cm:'#8b5cf6',cl:'#ede9fe'},
+  {c:'#be185d',cm:'#ec4899',cl:'#fce7f3'},
+  {c:'#0e7490',cm:'#06b6d4',cl:'#cffafe'},
+];
+const MS_COLORS=['#1a56b0','#0e7e5e','#b45309','#7c3aed','#be185d','#0e7490','#dc2626','#059669'];
+
+let projects=[
+  {
+    id:1,name:'โครงการ A',code:'PRJ-A',icon:'ti-building',
+    start:'2025-01-01',end:'2025-12-31',value:10000000,
+    milestones:[
+      {id:1,name:'งานเตรียมพื้นที่และฐานราก',pct:10,start:'2025-01-15',end:'2025-03-15',status:'done',tasks:[
+        {name:'งานเตรียมพื้นที่',start:'2025-01-15',end:'2025-01-31',prog:100},
+        {name:'งานเสาเข็ม',start:'2025-02-01',end:'2025-02-28',prog:100},
+        {name:'งานฐานราก',start:'2025-03-01',end:'2025-03-15',prog:100},
+      ]},
+      {id:2,name:'โครงสร้างชั้น 1–3',pct:20,start:'2025-03-16',end:'2025-06-30',status:'done',tasks:[
+        {name:'งานเสา-คาน ชั้น 1',start:'2025-03-16',end:'2025-04-15',prog:100},
+        {name:'งานพื้น ชั้น 1',start:'2025-04-16',end:'2025-05-10',prog:100},
+        {name:'งานเสา-คาน ชั้น 2–3',start:'2025-05-11',end:'2025-06-30',prog:100},
+      ]},
+      {id:3,name:'โครงสร้างชั้น 4–6 และหลังคา',pct:20,start:'2025-07-01',end:'2025-08-31',status:'wip',tasks:[
+        {name:'งานเสา-คาน ชั้น 4–5',start:'2025-07-01',end:'2025-07-25',prog:80},
+        {name:'งานชั้น 6 และดาดฟ้า',start:'2025-07-26',end:'2025-08-15',prog:30},
+        {name:'งานโครงหลังคา',start:'2025-08-16',end:'2025-08-31',prog:0},
+      ]},
+      {id:4,name:'งานสถาปัตย์และผนัง',pct:20,start:'2025-09-01',end:'2025-10-15',status:'wait',tasks:[
+        {name:'งานก่ออิฐฉาบปูน',start:'2025-09-01',end:'2025-09-25',prog:0},
+        {name:'งานกระเบื้อง-พื้น',start:'2025-09-26',end:'2025-10-10',prog:0},
+        {name:'งานผนังกระจก',start:'2025-10-11',end:'2025-10-15',prog:0},
+      ]},
+      {id:5,name:'งานระบบ MEP',pct:20,start:'2025-10-16',end:'2025-11-30',status:'wait',tasks:[
+        {name:'งานไฟฟ้า',start:'2025-10-16',end:'2025-11-10',prog:0},
+        {name:'งานประปา-สุขาภิบาล',start:'2025-10-20',end:'2025-11-15',prog:0},
+        {name:'งานปรับอากาศ',start:'2025-11-01',end:'2025-11-30',prog:0},
+      ]},
+      {id:6,name:'ส่งมอบและตรวจรับ',pct:10,start:'2025-12-01',end:'2025-12-31',status:'wait',tasks:[
+        {name:'Defect Correction',start:'2025-12-01',end:'2025-12-15',prog:0},
+        {name:'Final Inspection',start:'2025-12-16',end:'2025-12-25',prog:0},
+        {name:'ส่งมอบงาน',start:'2025-12-26',end:'2025-12-31',prog:0},
+      ]},
+    ]
+  },
+  {
+    id:2,name:'โครงการ B',code:'PRJ-B',icon:'ti-building-arch',
+    start:'2025-03-01',end:'2025-10-31',value:10000000,
+    milestones:[
+      {id:1,name:'งานออกแบบและวางผัง',pct:15,start:'2025-03-01',end:'2025-04-15',status:'done',tasks:[
+        {name:'สำรวจพื้นที่',start:'2025-03-01',end:'2025-03-15',prog:100},
+        {name:'ออกแบบสถาปัตย์',start:'2025-03-16',end:'2025-04-15',prog:100},
+      ]},
+      {id:2,name:'งานฐานรากและดิน',pct:20,start:'2025-04-16',end:'2025-06-15',status:'wip',tasks:[
+        {name:'งานขุดดิน',start:'2025-04-16',end:'2025-05-10',prog:100},
+        {name:'งานเสาเข็ม',start:'2025-05-11',end:'2025-05-31',prog:60},
+        {name:'งานฐานราก',start:'2025-06-01',end:'2025-06-15',prog:0},
+      ]},
+      {id:3,name:'โครงสร้างอาคาร',pct:30,start:'2025-06-16',end:'2025-08-31',status:'wait',tasks:[
+        {name:'งานเสา-คาน',start:'2025-06-16',end:'2025-07-31',prog:0},
+        {name:'งานพื้น',start:'2025-08-01',end:'2025-08-31',prog:0},
+      ]},
+      {id:4,name:'งานตกแต่งและระบบ',pct:25,start:'2025-09-01',end:'2025-10-15',status:'wait',tasks:[
+        {name:'งานสถาปัตย์',start:'2025-09-01',end:'2025-09-30',prog:0},
+        {name:'งานระบบ MEP',start:'2025-10-01',end:'2025-10-15',prog:0},
+      ]},
+      {id:5,name:'ส่งมอบงาน',pct:10,start:'2025-10-16',end:'2025-10-31',status:'wait',tasks:[
+        {name:'ตรวจรับงาน',start:'2025-10-16',end:'2025-10-25',prog:0},
+        {name:'ส่งมอบ',start:'2025-10-26',end:'2025-10-31',prog:0},
+      ]},
+    ]
+  },
+  {
+    id:3,name:'โครงการ C',code:'PRJ-C',icon:'ti-home',
+    start:'2025-06-01',end:'2026-05-31',value:10000000,
+    milestones:[
+      {id:1,name:'งานเตรียมพื้นที่',pct:10,start:'2025-06-01',end:'2025-07-31',status:'wait',tasks:[
+        {name:'สำรวจและออกแบบ',start:'2025-06-01',end:'2025-06-30',prog:0},
+        {name:'เตรียมพื้นที่',start:'2025-07-01',end:'2025-07-31',prog:0},
+      ]},
+      {id:2,name:'งานโครงสร้าง',pct:35,start:'2025-08-01',end:'2025-11-30',status:'wait',tasks:[
+        {name:'งานฐานราก',start:'2025-08-01',end:'2025-09-15',prog:0},
+        {name:'งานโครงสร้างหลัก',start:'2025-09-16',end:'2025-11-30',prog:0},
+      ]},
+      {id:3,name:'งานระบบและตกแต่ง',pct:40,start:'2025-12-01',end:'2026-03-31',status:'wait',tasks:[
+        {name:'งานระบบ MEP',start:'2025-12-01',end:'2026-01-31',prog:0},
+        {name:'งานตกแต่งภายใน',start:'2026-02-01',end:'2026-03-31',prog:0},
+      ]},
+      {id:4,name:'ส่งมอบงาน',pct:15,start:'2026-04-01',end:'2026-05-31',status:'wait',tasks:[
+        {name:'ตรวจรับและแก้ไข',start:'2026-04-01',end:'2026-05-15',prog:0},
+        {name:'ส่งมอบ',start:'2026-05-16',end:'2026-05-31',prog:0},
+      ]},
+    ]
+  },
+  {
+    id:4,name:'โครงการ D',code:'PRJ-D',icon:'ti-building-factory',
+    start:'2025-02-01',end:'2025-11-30',value:10000000,
+    milestones:[
+      {id:1,name:'งานวางผังและฐานราก',pct:20,start:'2025-02-01',end:'2025-04-30',status:'done',tasks:[
+        {name:'วางผัง',start:'2025-02-01',end:'2025-02-28',prog:100},
+        {name:'งานฐานราก',start:'2025-03-01',end:'2025-04-30',prog:100},
+      ]},
+      {id:2,name:'งานโครงสร้างเหล็ก',pct:30,start:'2025-05-01',end:'2025-07-31',status:'late',tasks:[
+        {name:'ประกอบโครงเหล็ก',start:'2025-05-01',end:'2025-06-30',prog:70},
+        {name:'งานหลังคา',start:'2025-07-01',end:'2025-07-31',prog:20},
+      ]},
+      {id:3,name:'งานผนังและพื้น',pct:25,start:'2025-08-01',end:'2025-10-15',status:'wait',tasks:[
+        {name:'งานผนัง',start:'2025-08-01',end:'2025-09-15',prog:0},
+        {name:'งานพื้น',start:'2025-09-16',end:'2025-10-15',prog:0},
+      ]},
+      {id:4,name:'งานระบบและส่งมอบ',pct:25,start:'2025-10-16',end:'2025-11-30',status:'wait',tasks:[
+        {name:'งานระบบไฟฟ้า',start:'2025-10-16',end:'2025-11-15',prog:0},
+        {name:'ส่งมอบงาน',start:'2025-11-16',end:'2025-11-30',prog:0},
+      ]},
+    ]
+  }
+];
+
+let activeProj=1;
+let activeMsId=null;
+let activeDTab='overview';
+let currentPage='portfolio';
+let projIdCounter=5;
+let msIdCounter=100;
+
+/* ══════════════ UTILS ══════════════ */
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000)}
+function fmt(d){if(!d)return'';const dt=new Date(d);return`${dt.getDate()}/${dt.getMonth()+1}/${dt.getFullYear()+543}`}
+function statusLabel(s){return{done:'เสร็จแล้ว',wip:'กำลังดำเนินการ',late:'ล่าช้า',wait:'รอดำเนินการ'}[s]||s}
+function statusIcon(s){return{done:'ti-circle-check',wip:'ti-loader',late:'ti-alert-triangle',wait:'ti-clock'}[s]||'ti-point'}
+function badge(s){return`<span class="badge badge-${s}"><i class="ti ${statusIcon(s)}" style="font-size:10px"></i>${statusLabel(s)}</span>`}
+function msProg(m){return m.tasks.length?Math.round(m.tasks.reduce((a,t)=>a+t.prog,0)/m.tasks.length):0}
+function projProg(p){
+  let tot=0,don=0;
+  p.milestones.forEach(m=>{tot+=m.pct;don+=m.pct*(msProg(m)/100);});
+  return tot?Math.round(don/tot*100):0;
+}
+function projColor(idx){return PROJ_COLORS[idx%PROJ_COLORS.length]}
+function todayStr(){return new Date().toISOString().split('T')[0]}
+
+/* TODAY */
+const thDays=['อา','จ','อ','พ','พฤ','ศ','ส'];
+const td=new Date();
+document.getElementById('todayTxt').textContent=`${thDays[td.getDay()]} ${fmt(todayStr())}`;
+
+/* ══════════════ PROJECT LIST ══════════════ */
+function renderProjList(){
+  document.getElementById('projCountChip').textContent=projects.length+' โครงการ';
+  document.getElementById('projList').innerHTML=projects.map((p,i)=>{
+    const col=projColor(i);
+    const prog=projProg(p);
+    const done=p.milestones.filter(m=>m.status==='done').length;
+    const late=p.milestones.filter(m=>m.status==='late').length;
+    return`<div class="proj-card${p.id===activeProj?' active':''}"
+      style="--pc:${col.c};--pcm:${col.cm};--pcl:${col.cl}"
+      onclick="selectProj(${p.id})">
+      <div class="pc-top">
+        <div class="pc-icon"><i class="ti ${p.icon}" aria-hidden="true"></i></div>
+        <div>
+          <div class="pc-name">${p.name}</div>
+          <div style="font-size:9px;color:var(--text3)">${p.code}</div>
+        </div>
+        ${late?`<span class="badge badge-late" style="font-size:9px;padding:1px 6px"><i class="ti ti-alert-triangle"></i> ล่าช้า</span>`:''}
+      </div>
+      <div class="pc-meta">
+        <span><i class="ti ti-coin"></i> ${(p.value/1e6).toFixed(1)}M ฿</span>
+        <span><i class="ti ti-calendar"></i> ${fmt(p.start)}–${fmt(p.end)}</span>
+      </div>
+      <div class="pc-bar-wrap">
+        <div class="pc-bar"><div class="pc-bar-fill" style="width:${prog}%"></div></div>
+        <div class="pc-pct">${prog}%</div>
+      </div>
+      <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+        <span class="pc-val-chip"><i class="ti ti-stack-2" style="font-size:10px"></i> ${p.milestones.length} งวด</span>
+        ${done?`<span class="pc-val-chip" style="background:#d1fae5;color:#065f46"><i class="ti ti-check" style="font-size:10px"></i> เสร็จ ${done}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════ PORTFOLIO PAGE ══════════════ */
+function renderPortfolio(){
+  const totalVal=projects.reduce((a,p)=>a+p.value,0);
+  const totalMs=projects.reduce((a,p)=>a+p.milestones.length,0);
+  const doneProj=projects.filter(p=>p.milestones.every(m=>m.status==='done')).length;
+  const lateMs=projects.reduce((a,p)=>a+p.milestones.filter(m=>m.status==='late').length,0);
+  const avgProg=projects.length?Math.round(projects.reduce((a,p)=>a+projProg(p),0)/projects.length):0;
+
+  let html=`<div class="port-hero fade-in">
+    <div class="port-title">📊 ภาพรวมทุกโครงการ</div>
+    <div class="port-sub">สรุปสถานะ มูลค่า และความคืบหน้าของโครงการก่อสร้างทั้งหมด</div>
+    <div class="port-kpis">
+      <div class="pk">
+        <i class="ti ti-building pk-icon" aria-hidden="true"></i>
+        <div class="pk-val">${projects.length}</div>
+        <div class="pk-lbl">โครงการทั้งหมด</div>
+      </div>
+      <div class="pk">
+        <i class="ti ti-coin pk-icon" aria-hidden="true"></i>
+        <div class="pk-val">${(totalVal/1e6).toFixed(1)}M</div>
+        <div class="pk-lbl">มูลค่ารวม (บาท)</div>
+      </div>
+      <div class="pk">
+        <i class="ti ti-stack-2 pk-icon" aria-hidden="true"></i>
+        <div class="pk-val">${totalMs}</div>
+        <div class="pk-lbl">งวดงานรวม</div>
+      </div>
+      <div class="pk">
+        <i class="ti ti-chart-pie pk-icon" aria-hidden="true"></i>
+        <div class="pk-val">${avgProg}%</div>
+        <div class="pk-lbl">ความคืบหน้าเฉลี่ย</div>
+      </div>
+      <div class="pk" style="${lateMs?'background:rgba(220,38,38,.2);border-color:rgba(220,38,38,.3)':''}">
+        <i class="ti ti-alert-triangle pk-icon" aria-hidden="true"></i>
+        <div class="pk-val" style="${lateMs?'color:#fca5a5':''}">${lateMs}</div>
+        <div class="pk-lbl">งวดที่ล่าช้า</div>
+      </div>
+    </div>
+  </div>
+  <div class="port-body fade-in">`;
+
+  /* Value bar */
+  html+=`<div class="value-bar-card">
+    <div class="vb-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> สัดส่วนมูลค่าแต่ละโครงการ (รวม ${(totalVal/1e6).toFixed(1)}M บาท)</div>
+    <div class="vb-track">`;
+  projects.forEach((p,i)=>{
+    const col=projColor(i);
+    const w=(p.value/totalVal*100).toFixed(1);
+    html+=`<div class="vb-seg" style="width:${w}%;background:${col.c}" onclick="selectProj(${p.id})" title="${p.name}: ${(p.value/1e6).toFixed(2)}M ฿">${w>8?p.name:''}</div>`;
+  });
+  html+=`</div><div class="vb-legend">`;
+  projects.forEach((p,i)=>{
+    const col=projColor(i);
+    const w=(p.value/totalVal*100).toFixed(1);
+    html+=`<div class="vb-item" onclick="selectProj(${p.id})" style="cursor:pointer">
+      <div class="vb-dot" style="background:${col.c}"></div>
+      ${p.name} <span class="vb-item-val">${(p.value/1e6).toFixed(1)}M</span> (${w}%)
+    </div>`;
+  });
+  html+=`</div></div>`;
+
+  /* Project cards grid */
+  html+=`<div class="section-head">
+    <div class="section-title"><i class="ti ti-layout-grid" aria-hidden="true"></i> รายละเอียดแต่ละโครงการ</div>
+  </div>
+  <div class="port-grid">`;
+  projects.forEach((p,i)=>{
+    const col=projColor(i);
+    const prog=projProg(p);
+    const done=p.milestones.filter(m=>m.status==='done').length;
+    const wip=p.milestones.filter(m=>m.status==='wip').length;
+    const late=p.milestones.filter(m=>m.status==='late').length;
+    const rem=Math.max(0,daysBetween(todayStr(),p.end));
+    const dotColor=late>0?'#dc2626':wip>0?col.c:'#9ca3af';
+    html+=`<div class="pg-card" onclick="selectProj(${p.id})" style="--pc:${col.c};--pcm:${col.cm}">
+      <div class="pg-header">
+        <div>
+          <div class="pg-proj-name">${p.name}</div>
+          <div class="pg-proj-code">${p.code} · ${p.milestones.length} งวดงาน</div>
+        </div>
+        <div class="pg-status-dot" style="background:${dotColor};border-color:${dotColor}22"></div>
+      </div>
+      <div class="pg-body">
+        <div class="pg-value">
+          <span class="pg-value-num">${(p.value/1e6).toFixed(2)}</span>
+          <span class="pg-value-unit">ล้านบาท</span>
+        </div>
+        <div class="pg-meta-row">
+          <span><i class="ti ti-calendar" style="font-size:11px"></i> ${fmt(p.start)} – ${fmt(p.end)}</span>
+          <span style="color:${rem<30?'var(--red)':'var(--text2)'}"><i class="ti ti-clock" style="font-size:11px"></i> เหลือ ${rem} วัน</span>
+        </div>
+        <div class="pg-progress-section">
+          <div class="pg-progress-label">
+            <span>ความคืบหน้า</span>
+            <span>${prog}%</span>
+          </div>
+          <div class="pg-bar"><div class="pg-bar-fill" style="width:${prog}%"></div></div>
+        </div>
+        <div class="pg-milestones">`;
+    p.milestones.forEach(m=>{
+      const cls=m.status==='done'?'done':m.status==='wip'?'wip':'';
+      html+=`<div class="pg-ms-dot ${cls}" title="${m.name}"></div>`;
+    });
+    html+=`</div>
+      </div>
+      <div class="pg-footer">
+        <div class="pg-ms-summary">
+          ${done?`<span style="color:var(--green)"><i class="ti ti-check"></i> ${done} เสร็จ</span>`:''}
+          ${wip?`<span style="color:var(--c1)"><i class="ti ti-loader"></i> ${wip} กำลังทำ</span>`:''}
+          ${late?`<span style="color:var(--red)"><i class="ti ti-alert-triangle"></i> ${late} ล่าช้า</span>`:''}
+          ${!done&&!wip&&!late?`<span>รอเริ่มต้น</span>`:''}
+        </div>
+        <span style="font-size:11px;color:var(--c1);font-weight:600">ดูรายละเอียด →</span>
+      </div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+
+  document.getElementById('contentArea').innerHTML=html;
+}
+
+/* ══════════════ PROJECT DETAIL ══════════════ */
+function renderDetail(){
+  const p=projects.find(x=>x.id===activeProj);
+  if(!p)return;
+  const idx=projects.indexOf(p);
+  const col=projColor(idx);
+  const prog=projProg(p);
+  const val=p.value;
+  const rem=Math.max(0,daysBetween(todayStr(),p.end));
+  const elapsed=Math.max(0,daysBetween(p.start,todayStr()));
+  const tot=daysBetween(p.start,p.end);
+  const done=p.milestones.filter(m=>m.status==='done').length;
+  const late=p.milestones.filter(m=>m.status==='late').length;
+  const earned=val*p.milestones.filter(m=>m.status==='done').reduce((a,m)=>a+m.pct,0)/100;
+
+  document.getElementById('detBtnName').textContent=p.name;
+
+  let html=`<div style="--pc:${col.c};--pcm:${col.cm};--pcl:${col.cl}">
+  <div class="det-hero">
+    <div class="det-top">
+      <div class="det-icon" style="background:${col.c}"><i class="ti ${p.icon}" aria-hidden="true"></i></div>
+      <div>
+        <div class="det-name">${p.name}</div>
+        <div class="det-code">${p.code} · มูลค่า ${(val/1e6).toFixed(2)}M บาท · ${p.milestones.length} งวดงาน</div>
+      </div>
+      <div class="det-actions">
+        <button class="btn" onclick="editProjInfo(${p.id})" style="font-size:11px"><i class="ti ti-edit"></i> แก้ไขข้อมูล</button>
+        <button class="btn" onclick="addMilestone(${p.id})" style="font-size:11px;border-color:${col.c};color:${col.c}"><i class="ti ti-plus"></i> เพิ่มงวด</button>
+        ${projects.length>1?`<button class="btn" onclick="deleteProject(${p.id})" style="font-size:11px;color:var(--red);border-color:var(--red)"><i class="ti ti-trash"></i></button>`:''}
+      </div>
+    </div>
+    <div class="det-kpis">
+      <div class="dkpi"><div class="dkpi-val" style="color:${col.c}">${prog}%</div><div class="dkpi-lbl">ความคืบหน้ารวม</div></div>
+      <div class="dkpi"><div class="dkpi-val" style="color:var(--green)">${done}</div><div class="dkpi-lbl">งวดเสร็จ / ${p.milestones.length}</div></div>
+      <div class="dkpi"><div class="dkpi-val" style="color:${rem<30?'var(--red)':'var(--text)'}"><span style="font-size:14px">${rem}</span></div><div class="dkpi-lbl">วันคงเหลือ</div></div>
+      <div class="dkpi"><div class="dkpi-val" style="color:var(--amber)">${(earned/1e6).toFixed(2)}M</div><div class="dkpi-lbl">มูลค่าเบิกได้</div></div>
+      <div class="dkpi"><div class="dkpi-val" style="color:${late?'var(--red)':'var(--text)'}">${late}</div><div class="dkpi-lbl">งวดล่าช้า</div></div>
+    </div>
+    <div class="det-tabs">
+      <button class="dt${activeDTab==='overview'?' on':''}" onclick="switchDTab('overview')"><i class="ti ti-layout-dashboard"></i>ภาพรวม</button>
+      <button class="dt${activeDTab==='gantt'?' on':''}" onclick="switchDTab('gantt')"><i class="ti ti-chart-gantt"></i>Gantt</button>
+      <button class="dt${activeDTab==='timeline'?' on':''}" onclick="switchDTab('timeline')"><i class="ti ti-timeline"></i>Timeline</button>
+      <button class="dt${activeDTab==='edit'?' on':''}" onclick="switchDTab('edit')"><i class="ti ti-list-details"></i>รายละเอียด</button>
+    </div>
+  </div>
+  <div class="det-body fade-in" id="detBody">`;
+
+  if(activeDTab==='overview') html+=renderDOverview(p,col);
+  else if(activeDTab==='gantt') html+=renderDGantt(p,col);
+  else if(activeDTab==='timeline') html+=renderDTimeline(p,col);
+  else if(activeDTab==='edit') html+=renderDEdit(p,col);
+
+  html+=`</div></div>`;
+  document.getElementById('contentArea').innerHTML=html;
+}
+
+function renderDOverview(p,col){
+  const val=p.value;
+  let h=`<div class="ms-ov-grid">`;
+  p.milestones.forEach((m,i)=>{
+    const c=MS_COLORS[i%MS_COLORS.length];
+    const pg=msProg(m);
+    const msVal=val*m.pct/100;
+    const dur=daysBetween(m.start,m.end);
+    h+=`<div class="ms-ov-card" style="--msc:${c}" onclick="activeMsId=${m.id};switchDTab('edit')">
+      <div class="ms-ov-top">
+        <div class="ms-ov-name">${m.name}</div>
+        ${badge(m.status)}
+      </div>
+      <div class="ms-ov-meta">
+        <span><i class="ti ti-calendar"></i> ${fmt(m.start)} → ${fmt(m.end)}</span>
+        <span><i class="ti ti-clock"></i> ${dur} วัน</span>
+        <span><i class="ti ti-coin"></i> ${(msVal/1e6).toFixed(2)}M ฿ (${m.pct}%)</span>
+        <span><i class="ti ti-subtask"></i> ${m.tasks.length} งาน</span>
+      </div>
+      <div class="ms-ov-footer">
+        <div class="ms-ov-prog-bar"><div class="ms-ov-prog-fill" style="width:${pg}%"></div></div>
+        <div class="ms-ov-pct">${pg}%</div>
+      </div>
+    </div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+
+function renderDGantt(p,col){
+  const ps=p.start, pe=p.end;
+  const tot=daysBetween(ps,pe);
+  const todayOff=Math.min(Math.max(0,daysBetween(ps,todayStr())),tot);
+  const todayPct=(todayOff/tot*100).toFixed(1);
+
+  let h=`<div style="margin-bottom:.65rem;font-size:11px;color:var(--text2);display:flex;gap:14px">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e5e7eb;margin-right:4px"></span>แผน</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${col.c};margin-right:4px"></span>ความคืบหน้า</span>
+    <span><span style="display:inline-block;width:2px;height:10px;background:var(--red);margin-right:4px"></span>วันนี้</span>
+  </div>
+  <div class="gantt-card"><div style="overflow-x:auto">
+  <table class="gtbl" id="dGantt"><thead><tr>
+    <th style="min-width:165px">งาน</th>
+    <th style="width:70px">เริ่ม</th>
+    <th style="width:70px">สิ้นสุด</th>
+    <th style="width:38px">%</th>
+    <th style="width:38px">สถานะ</th>
+    <th class="g-bar-cell">แผนผัง (${fmt(ps)} – ${fmt(pe)})</th>
+  </tr></thead><tbody>`;
+
+  p.milestones.forEach((m,mi)=>{
+    const c=MS_COLORS[mi%MS_COLORS.length];
+    const ms_off=Math.max(0,daysBetween(ps,m.start));
+    const ms_dur=Math.max(1,daysBetween(m.start,m.end));
+    const ml=(ms_off/tot*100).toFixed(1);
+    const mw=(ms_dur/tot*100).toFixed(1);
+    const pg=msProg(m);
+    h+=`<tr class="gr-ms" onclick="activeMsId=${m.id};switchDTab('edit')" style="cursor:pointer">
+      <td><span style="color:${c};font-size:11px;font-weight:700">งวด ${mi+1}:</span> <span style="font-size:11px">${m.name}</span></td>
+      <td style="font-size:10px">${fmt(m.start)}</td>
+      <td style="font-size:10px">${fmt(m.end)}</td>
+      <td style="font-size:11px;font-weight:700;color:${c}">${pg}%</td>
+      <td>${badge(m.status)}</td>
+      <td class="g-bar-cell">
+        <div class="g-track">
+          <div class="g-plan" style="left:${ml}%;width:${mw}%;background:${c}"></div>
+          <div class="g-prog" style="left:${ml}%;width:${(parseFloat(mw)*pg/100).toFixed(1)}%;background:${c}">${pg>15?pg+'%':''}</div>
+          <div class="g-today" style="left:${todayPct}%"></div>
+        </div>
+      </td>
+    </tr>`;
+    m.tasks.forEach(t=>{
+      const t_off=Math.max(0,daysBetween(ps,t.start));
+      const t_dur=Math.max(1,daysBetween(t.start,t.end));
+      const tl=(t_off/tot*100).toFixed(1);
+      const tw=(t_dur/tot*100).toFixed(1);
+      h+=`<tr class="gr-task">
+        <td class="g-indent"><i class="ti ti-corner-down-right" style="font-size:10px"></i> ${t.name}</td>
+        <td style="font-size:10px;color:var(--text2)">${fmt(t.start)}</td>
+        <td style="font-size:10px;color:var(--text2)">${fmt(t.end)}</td>
+        <td style="font-size:10px;color:var(--text2)">${t.prog}%</td>
+        <td></td>
+        <td class="g-bar-cell">
+          <div class="g-track" style="height:13px">
+            <div class="g-plan" style="left:${tl}%;width:${tw}%;background:${c}"></div>
+            <div class="g-prog" style="left:${tl}%;width:${(parseFloat(tw)*t.prog/100).toFixed(1)}%;background:${c};font-size:0"></div>
+            <div class="g-today" style="left:${todayPct}%"></div>
+          </div>
+        </td>
+      </tr>`;
+    });
+  });
+  h+=`</tbody></table></div></div>`;
+  return h;
+}
+
+function renderDTimeline(p,col){
+  const val=p.value;
+  let h='';
+  p.milestones.forEach((m,i)=>{
+    const c=MS_COLORS[i%MS_COLORS.length];
+    const pg=msProg(m);
+    const dur=daysBetween(m.start,m.end);
+    const msVal=val*m.pct/100;
+    const dotCls=m.status==='done'?'done':m.status==='late'?'late':m.status==='wip'?'wip':'';
+    h+=`<div class="tl-item">
+      <div class="tl-date-col"><div class="tl-date">${fmt(m.end)}</div></div>
+      <div class="tl-spine">
+        <div class="tl-dot ${dotCls}" style="${m.status==='wip'?'border-color:'+c+';box-shadow:0 0 0 3px '+c+'22':''}"></div>
+        ${i<p.milestones.length-1?'<div class="tl-line"></div>':''}
+      </div>
+      <div class="tl-card" style="--msc:${c}" onclick="activeMsId=${m.id};switchDTab('edit')">
+        <div class="tl-card-top">
+          <div class="tl-card-name" style="color:${c}">งวดที่ ${i+1}: ${m.name}</div>
+          ${badge(m.status)}
+        </div>
+        <div class="tl-card-meta">
+          <span><i class="ti ti-calendar"></i> ${fmt(m.start)} – ${fmt(m.end)}</span>
+          <span><i class="ti ti-clock"></i> ${dur} วัน</span>
+          <span><i class="ti ti-coin"></i> ${(msVal/1e6).toFixed(2)}M ฿ (${m.pct}%)</span>
+          <span><i class="ti ti-chart-bar"></i> เสร็จ ${pg}%</span>
+        </div>
+        <div class="tl-prog"><div class="tl-prog-fill" style="width:${pg}%;background:${c}"></div></div>
+      </div>
+    </div>`;
+  });
+  return h||'<p style="color:var(--text3);font-size:12px">ยังไม่มีงวดงาน</p>';
+}
+
+function renderDEdit(p,col){
+  const m=activeMsId?p.milestones.find(x=>x.id===activeMsId):null;
+  const val=p.value;
+
+  /* left: ms list | right: edit form */
+  let h=`<div style="display:grid;grid-template-columns:220px 1fr;gap:12px">
+  <div>
+    <div class="ms-header-row">
+      <div class="ms-count-lbl"><i class="ti ti-list-numbers"></i> ${p.milestones.length} งวดงาน</div>
+      <button class="btn" onclick="addMilestone(${p.id})" style="font-size:10px;padding:4px 9px"><i class="ti ti-plus"></i></button>
+    </div>`;
+
+  p.milestones.forEach((ms,i)=>{
+    const c=MS_COLORS[i%MS_COLORS.length];
+    const pg=msProg(ms);
+    h+=`<div class="ms-item${ms.id===activeMsId?' active':''}" style="--msc:${c}" onclick="activeMsId=${ms.id};renderAll()">
+      <div class="ms-top">
+        <div class="ms-num">${i+1}</div>
+        <div class="ms-name">${ms.name}</div>
+        ${badge(ms.status)}
+      </div>
+      <div class="ms-meta">
+        <i class="ti ti-calendar"></i> ${fmt(ms.start)} → ${fmt(ms.end)}
+        <span style="margin-left:auto;font-weight:700;color:${c}">${ms.pct}%</span>
+      </div>
+      <div class="ms-bar"><div class="ms-bar-fill" style="width:${pg}%"></div></div>
+    </div>`;
+  });
+  h+=`</div><div>`;
+
+  if(!m){
+    h+=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--text3);text-align:center">
+      <i class="ti ti-click" style="font-size:36px;margin-bottom:8px"></i>
+      <div style="font-size:13px">เลือกงวดงานด้านซ้ายเพื่อแก้ไข<br>หรือกด + เพื่อเพิ่มงวดใหม่</div>
+    </div>`;
+  } else {
+    const msIdx=p.milestones.indexOf(m);
+    const c=MS_COLORS[msIdx%MS_COLORS.length];
+    const msVal=val*m.pct/100;
+    const pg=msProg(m);
+    const dur=daysBetween(m.start,m.end);
+    h+=`<div class="det-edit-wrap">
+      <div class="card">
+        <div class="card-title" style="color:${c}"><i class="ti ti-list-details"></i> งวดที่ ${msIdx+1}: ${m.name}</div>
+        <div class="kpi4">
+          <div class="k4"><div class="k4-val" style="color:${c}">${m.pct}%</div><div class="k4-lbl">สัดส่วนสัญญา</div></div>
+          <div class="k4"><div class="k4-val" style="color:${c}">${(msVal/1e6).toFixed(2)}M</div><div class="k4-lbl">มูลค่า (ล้านบาท)</div></div>
+          <div class="k4"><div class="k4-val" style="color:${c}">${dur}</div><div class="k4-lbl">จำนวนวัน</div></div>
+          <div class="k4"><div class="k4-val" style="color:${c}">${pg}%</div><div class="k4-lbl">ความคืบหน้า</div></div>
+        </div>
+        <div class="prog-bar-lg"><div class="prog-bar-lg-fill" style="width:${pg}%;background:${c}"></div></div>
+        <div style="text-align:right;font-size:10px;color:var(--text3);margin-bottom:.85rem">${pg}% เสร็จสิ้น</div>
+        <div class="date-edit">
+          <div><label>ชื่องวดงาน</label><input type="text" value="${m.name}" onchange="muUp(${p.id},${m.id},'name',this.value)" style="width:100%"></div>
+          <div><label>วันเริ่ม</label><input type="date" value="${m.start}" onchange="muUp(${p.id},${m.id},'start',this.value)"></div>
+          <div><label>วันสิ้นสุด</label><input type="date" value="${m.end}" onchange="muUp(${p.id},${m.id},'end',this.value)"></div>
+          <div><label>% มูลค่างวด</label><input type="number" min="0" max="100" value="${m.pct}" onchange="muUp(${p.id},${m.id},'pct',+this.value)"></div>
+          <div><label>สถานะ</label>
+            <select onchange="muUp(${p.id},${m.id},'status',this.value)">
+              <option value="wait"${m.status==='wait'?' selected':''}>รอดำเนินการ</option>
+              <option value="wip"${m.status==='wip'?' selected':''}>กำลังดำเนินการ</option>
+              <option value="done"${m.status==='done'?' selected':''}>เสร็จแล้ว</option>
+              <option value="late"${m.status==='late'?' selected':''}>ล่าช้า</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+          <div style="font-size:11px;font-weight:700;color:${c};display:flex;align-items:center;gap:4px">
+            <i class="ti ti-subtask"></i> งานย่อย
+            <span style="background:${c}22;color:${c};border-radius:20px;padding:1px 8px;font-size:9px">${m.tasks.length}</span>
+          </div>
+          <button onclick="addTask(${p.id},${m.id})" class="btn" style="font-size:11px;padding:4px 10px;border-color:${c};color:${c}">
+            <i class="ti ti-plus"></i> เพิ่มงาน
+          </button>
+        </div>
+        ${m.tasks.length?`
+        <div class="task-cols">
+          <div class="tcol">ชื่องาน</div>
+          <div class="tcol" style="text-align:center">วันเริ่ม</div>
+          <div class="tcol" style="text-align:center">วันสิ้นสุด</div>
+          <div class="tcol" style="text-align:center">% เสร็จ</div>
+          <div></div>
+        </div>
+        ${m.tasks.map((t,ti)=>`
+        <div class="task-row2">
+          <input type="text" value="${t.name}" onchange="tuUp(${p.id},${m.id},${ti},'name',this.value)">
+          <input type="date" value="${t.start}" onchange="tuUp(${p.id},${m.id},${ti},'start',this.value)">
+          <input type="date" value="${t.end}" onchange="tuUp(${p.id},${m.id},${ti},'end',this.value)">
+          <input type="number" min="0" max="100" value="${t.prog}" onchange="tuUp(${p.id},${m.id},${ti},'prog',+this.value)">
+          <button class="btn-del" onclick="delTask(${p.id},${m.id},${ti})"><i class="ti ti-trash"></i></button>
+        </div>`).join('')}
+        `:`<div class="empty-tasks"><i class="ti ti-clipboard-plus"></i>ยังไม่มีงานย่อย กด "เพิ่มงาน" เพื่อเริ่ม</div>`}
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <button onclick="delMilestone(${p.id},${m.id})" class="btn" style="font-size:11px;color:var(--red);border-color:var(--red)"><i class="ti ti-trash"></i> ลบงวดนี้</button>
+      </div>
+    </div>`;
+  }
+  h+=`</div></div>`;
+  return h;
+}
+
+/* ══════════════ ACTIONS ══════════════ */
+function muUp(pid,mid,key,val){
+  const p=projects.find(x=>x.id===pid);
+  const m=p&&p.milestones.find(x=>x.id===mid);
+  if(m){m[key]=val;renderAll()}
+}
+function tuUp(pid,mid,ti,key,val){
+  const p=projects.find(x=>x.id===pid);
+  const m=p&&p.milestones.find(x=>x.id===mid);
+  if(m&&m.tasks[ti]){m.tasks[ti][key]=val;renderAll()}
+}
+function addTask(pid,mid){
+  const p=projects.find(x=>x.id===pid);
+  const m=p&&p.milestones.find(x=>x.id===mid);
+  if(m){m.tasks.push({name:'งานใหม่',start:m.start,end:m.end,prog:0});renderAll()}
+}
+function delTask(pid,mid,ti){
+  const p=projects.find(x=>x.id===pid);
+  const m=p&&p.milestones.find(x=>x.id===mid);
+  if(m){m.tasks.splice(ti,1);renderAll()}
+}
+function addMilestone(pid){
+  const p=projects.find(x=>x.id===pid);
+  if(!p)return;
+  const newId=msIdCounter++;
+  p.milestones.push({id:newId,name:`งวดที่ ${p.milestones.length+1} — งานใหม่`,pct:5,start:p.start,end:p.end,status:'wait',tasks:[]});
+  activeMsId=newId;
+  activeDTab='edit';
+  renderAll();
+}
+function delMilestone(pid,mid){
+  const p=projects.find(x=>x.id===pid);
+  if(!p||p.milestones.length<=1){alert('ต้องมีงวดงานอย่างน้อย 1 งวด');return}
+  if(!confirm('ยืนยันลบงวดงานนี้?'))return;
+  p.milestones=p.milestones.filter(x=>x.id!==mid);
+  activeMsId=p.milestones[0].id;
+  renderAll();
+}
+function addProject(){
+  const name=prompt('ชื่อโครงการใหม่:','โครงการ '+String.fromCharCode(65+projects.length));
+  if(!name)return;
+  const valStr=prompt('มูลค่าสัญญา (บาท):','10000000');
+  const val=parseInt(valStr)||10000000;
+  const newId=projIdCounter++;
+  const icons=['ti-building','ti-building-arch','ti-home','ti-building-factory','ti-building-bridge','ti-tower'];
+  projects.push({
+    id:newId,
+    name:name,
+    code:'PRJ-'+String.fromCharCode(64+projects.length),
+    icon:icons[projects.length%icons.length],
+    start:todayStr(),
+    end:new Date(Date.now()+365*86400000).toISOString().split('T')[0],
+    value:val,
+    milestones:[
+      {id:msIdCounter++,name:'งวดที่ 1 — งานเตรียมการ',pct:20,start:todayStr(),end:new Date(Date.now()+90*86400000).toISOString().split('T')[0],status:'wait',tasks:[]}
+    ]
+  });
+  activeProj=newId;
+  activeMsId=null;
+  activeDTab='overview';
+  showPage('detail');
+}
+function deleteProject(pid){
+  if(projects.length<=1){alert('ต้องมีโครงการอย่างน้อย 1 โครงการ');return}
+  const p=projects.find(x=>x.id===pid);
+  if(!confirm(`ยืนยันลบ "${p.name}"?`))return;
+  projects=projects.filter(x=>x.id!==pid);
+  activeProj=projects[0].id;
+  activeMsId=null;
+  showPage('portfolio');
+}
+function editProjInfo(pid){
+  const p=projects.find(x=>x.id===pid);
+  if(!p)return;
+  const name=prompt('ชื่อโครงการ:',p.name);
+  if(name)p.name=name;
+  const valStr=prompt('มูลค่าสัญญา (บาท):',p.value);
+  const val=parseInt(valStr);
+  if(val>0)p.value=val;
+  renderAll();
+}
+function selectProj(id){
+  activeProj=id;
+  activeMsId=null;
+  activeDTab='overview';
+  showPage('detail');
+}
+function showPage(page){
+  currentPage=page;
+  document.querySelector('.np:first-child').classList.toggle('on',page==='portfolio');
+  const detBtn=document.getElementById('detBtn');
+  detBtn.style.display=page==='detail'?'flex':'none';
+  if(page==='detail') detBtn.classList.add('on');
+  renderAll();
+}
+function switchDTab(tab){
+  activeDTab=tab;
+  renderAll();
+}
+
+/* ══════════════ RENDER ALL ══════════════ */
+function renderAll(){
+  renderProjList();
+  if(currentPage==='portfolio') renderPortfolio();
+  else renderDetail();
+}
+
+renderAll();
+</script>
+</body>
+</html>
